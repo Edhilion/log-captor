@@ -2,13 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.hakky54</groupId>
+    <groupId>io.github.edhilion</groupId>
     <artifactId>logcaptor</artifactId>
     <version>2.6.2-SNAPSHOT</version>
 
-    <name>log-captor</name>
-    <description>LogCaptor will enable you to easily capture logging entries for unit testing purposes</description>
-    <url>https://github.com/Hakky54/log-captor</url>
+    <name>log-captor-log4j2</name>
+    <description>LogCaptor will enable you to easily capture logging entries for unit testing purposes (based upon https://github.com/Hakky54/log-captor)</description>
+    <url>https://github.com/Edhilion/log-captor</url>
 
     <licenses>
         <license>
@@ -19,18 +19,18 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/Hakky54/log-captor</url>
-        <connection>scm:git:git@github.com:Hakky54/log-captor.git</connection>
-        <developerConnection>scm:git:git@github.com:Hakky54/log-captor.git</developerConnection>
+        <url>https://github.com/Edhilion/log-captor</url>
+        <connection>scm:git:git@github.com:Edhilion/log-captor.git</connection>
+        <developerConnection>scm:git:git@github.com:Edhilion/log-captor.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
     <developers>
         <developer>
-            <id>Hakky54</id>
-            <name>Hakan Altindag</name>
-            <organization>Thunderberry</organization>
-            <url>https://github.com/Hakky54</url>
+            <id>Edhilion</id>
+            <name>Sebastien Vicard</name>
+            <organization>Tennaxia</organization>
+            <url>https://github.com/Edhilion</url>
             <roles>
                 <role>Maintainer</role>
             </roles>
@@ -55,11 +55,13 @@
         <version.assertj>3.19.0</version.assertj>
         <version.mockito>3.11.0</version.mockito>
         <version.lombok>1.18.20</version.lombok>
-        <version.jul-to-slf4j>1.7.30</version.jul-to-slf4j>
-        <version.apache.log4j-to-slf4j>2.14.1</version.apache.log4j-to-slf4j>
-        <version.log4j>1.2.17</version.log4j>
-        <version.log4j-over-slf4j>1.7.30</version.log4j-over-slf4j>
+
+        <version.apache.log4j>2.14.1</version.apache.log4j>
         <version.log4j-slf4j-impl>2.14.1</version.log4j-slf4j-impl>
+        <version.jcl-over-slf4j>1.7.30</version.jcl-over-slf4j>
+        <version.jul-to-slf4j>1.7.30</version.jul-to-slf4j>
+        <version.log4j>1.2.17</version.log4j>
+
         <version.jacoco-maven-plugin>0.8.5</version.jacoco-maven-plugin>
         <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
         <version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
@@ -74,22 +76,51 @@
     </properties>
 
     <dependencies>
+        <!-- Using Log4j 2 as the main logging framework -->
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${version.logback}</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${version.apache.log4j}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-to-slf4j</artifactId>
-            <version>${version.apache.log4j-to-slf4j}</version>
+            <artifactId>log4j-core</artifactId>
+            <version>${version.apache.log4j}</version>
+            <type>test-jar</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Using SLF4J as the logging wrapper -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${version.log4j-slf4j-impl}</version>
+        </dependency>
+
+        <!-- Bindings from other logging frameworks to SLF4J -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${version.jcl-over-slf4j}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
             <version>${version.jul-to-slf4j}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+            <version>2.14.1</version>
+        </dependency>
 
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${version.logback}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -115,18 +146,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-            <version>${version.log4j-over-slf4j}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>${version.log4j-slf4j-impl}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -154,7 +173,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Automatic-Module-Name>io.github.hakky54.logcaptor</Automatic-Module-Name>
+                            <Automatic-Module-Name>io.github.edhilion.logcaptor</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>

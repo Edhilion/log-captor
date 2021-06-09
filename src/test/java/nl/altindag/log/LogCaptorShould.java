@@ -16,16 +16,43 @@
 
 package nl.altindag.log;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.filter.LevelFilter;
-import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.read.ListAppender;
-import ch.qos.logback.core.spi.FilterReply;
+import static java.util.Spliterator.ORDERED;
+import static java.util.Spliterators.spliteratorUnknownSize;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.filter.LevelMatchFilter;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.LoggerFactory;
+
 import nl.altindag.log.model.LogEvent;
 import nl.altindag.log.service.LogMessage;
 import nl.altindag.log.service.Service;
-import nl.altindag.log.service.apache.ServiceWithApacheLog4j;
+import nl.altindag.log.service.apache.ServiceWithApacheLog4j2;
 import nl.altindag.log.service.apache.ServiceWithApacheLog4jAndMdcHeaders;
 import nl.altindag.log.service.jdk.ServiceWithJavaUtilLogging;
 import nl.altindag.log.service.lombok.ServiceWithLombokAndJavaUtilLogging;
@@ -35,33 +62,9 @@ import nl.altindag.log.service.lombok.ServiceWithLombokAndSlf4j;
 import nl.altindag.log.service.slfj4.ServiceWithSlf4j;
 import nl.altindag.log.service.slfj4.ServiceWithSlf4jAndCustomException;
 import nl.altindag.log.service.slfj4.ServiceWithSlf4jAndMdcHeaders;
-import org.apache.logging.slf4j.Log4jLogger;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockedStatic;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 
 /**
- * @author Hakan Altindag
+ * @author Hakan Altindag - Sébastien Vicard
  */
 @ExtendWith(MockitoExtension.class)
 class LogCaptorShould {
@@ -76,10 +79,10 @@ class LogCaptorShould {
 
     @Test
     void captureLoggingEventsWhereApacheLogManagerIsUsed() {
-        logCaptor = LogCaptor.forClass(ServiceWithApacheLog4j.class);
+        logCaptor = LogCaptor.forClass(ServiceWithApacheLog4j2.class);
         logCaptor.setLogLevelToTrace();
 
-        Service service = new ServiceWithApacheLog4j();
+        Service service = new ServiceWithApacheLog4j2();
         service.sayHello();
 
         assertThat(logCaptor.getInfoLogs()).containsExactly(LogMessage.INFO.getMessage());
@@ -104,7 +107,7 @@ class LogCaptorShould {
         logCaptor = LogCaptor.forRoot();
         logCaptor.setLogLevelToTrace();
 
-        Service service = new ServiceWithApacheLog4j();
+        Service service = new ServiceWithApacheLog4j2();
         service.sayHello();
 
         assertThat(logCaptor.getInfoLogs()).containsExactly(LogMessage.INFO.getMessage());
@@ -152,10 +155,10 @@ class LogCaptorShould {
 
     @Test
     void captureLoggingEventsByUsingForNameMethodWithLogCaptor() {
-        logCaptor = LogCaptor.forName("nl.altindag.log.service.apache.ServiceWithApacheLog4j");
+        logCaptor = LogCaptor.forName("nl.altindag.log.service.apache.ServiceWithApacheLog4j2");
         logCaptor.setLogLevelToTrace();
 
-        Service service = new ServiceWithApacheLog4j();
+        Service service = new ServiceWithApacheLog4j2();
         service.sayHello();
 
         assertThat(logCaptor.getInfoLogs()).containsExactly(LogMessage.INFO.getMessage());
@@ -177,10 +180,10 @@ class LogCaptorShould {
 
     @Test
     void captureLoggingEventsWithDebugEnabled() {
-        logCaptor = LogCaptor.forClass(ServiceWithApacheLog4j.class);
+        logCaptor = LogCaptor.forClass(ServiceWithApacheLog4j2.class);
         logCaptor.setLogLevelToInfo();
 
-        Service service = new ServiceWithApacheLog4j();
+        Service service = new ServiceWithApacheLog4j2();
         service.sayHello();
 
         assertThat(logCaptor.getLogs())
@@ -292,10 +295,10 @@ class LogCaptorShould {
 
     @Test
     void doNotCaptureLogMessagesWhenItIsDisabled() {
-        logCaptor = LogCaptor.forClass(ServiceWithApacheLog4j.class);
+        logCaptor = LogCaptor.forClass(ServiceWithApacheLog4j2.class);
         logCaptor.disableLogs();
 
-        Service service = new ServiceWithApacheLog4j();
+        Service service = new ServiceWithApacheLog4j2();
         service.sayHello();
 
         assertThat(logCaptor.getLogs()).isEmpty();
@@ -303,10 +306,10 @@ class LogCaptorShould {
 
     @Test
     void captureTimeStampOfLogsAndRetainOrderOfOccurrence() {
-        logCaptor = LogCaptor.forClass(ServiceWithApacheLog4j.class);
+        logCaptor = LogCaptor.forClass(ServiceWithApacheLog4j2.class);
         logCaptor.setLogLevelToTrace();
 
-        Service service = new ServiceWithApacheLog4j();
+        Service service = new ServiceWithApacheLog4j2();
         service.sayHello();
 
         List<LogEvent> logEvents = logCaptor.getLogEvents();
@@ -324,43 +327,43 @@ class LogCaptorShould {
     void captureLoggerName() {
         logCaptor = LogCaptor.forRoot();
 
-        Service service = new ServiceWithApacheLog4j();
-        service.sayHello();
+        new ServiceWithApacheLog4j2().sayHello();
 
         List<LogEvent> logEvents = logCaptor.getLogEvents();
 
         assertThat(logEvents).hasSize(4);
-        assertThat(logEvents.get(0).getLoggerName()).isEqualTo(ServiceWithApacheLog4j.class.getName());
+        assertThat(logEvents.get(0).getLoggerName()).isEqualTo(ServiceWithApacheLog4j2.class.getName());
     }
 
     @Test
-    void throwExceptionWhenLoggerImplementationIsNotLogback() {
+    void throwExceptionWhenLoggerImplementationIsNotLog4j2() {
         try (MockedStatic<LoggerFactory> loggerFactoryMockedStatic = mockStatic(LoggerFactory.class, InvocationOnMock::getMock)) {
 
-            Log4jLogger logger = mock(Log4jLogger.class);
+            ch.qos.logback.classic.Logger logger = mock(ch.qos.logback.classic.Logger.class);
             loggerFactoryMockedStatic.when(() -> LoggerFactory.getLogger(anyString())).thenReturn(logger);
 
             assertThatThrownBy(LogCaptor::forRoot)
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage(
-                            "SLF4J Logger implementation should be of the type [ch.qos.logback.classic.Logger] but found [org.apache.logging.slf4j.Log4jLogger]. " +
-                            "Please remove any other SLF4J implementations during the test phase from your classpath of your project. " +
-                            "See here for an example configurations: https://github.com/Hakky54/log-captor#using-log-captor-alongside-with-other-logging-libraries"
+                            "SLF4J Logger implementation should be of the type [org.apache.logging.log4j.core.Logger] but found [ch.qos.logback.classic.Logger]. " +
+                                    "Please remove any other SLF4J implementations during the test phase from your classpath of your project. " +
+                                    "See here for an example configurations: https://github.com/Hakky54/log-captor#using-log-captor-alongside-with-other-logging-libraries"
                     );
         }
     }
 
     @Test
     void filterInfoMessages() {
-        LevelFilter levelFilter = new LevelFilter();
-        levelFilter.setOnMismatch(FilterReply.DENY);
-        levelFilter.setLevel(Level.INFO);
+        Filter levelFilter = LevelMatchFilter.newBuilder()
+                .setLevel(org.apache.logging.log4j.Level.INFO)
+                .setOnMismatch(Filter.Result.DENY)
+                .build();
 
-        logCaptor = LogCaptor.forClass(ServiceWithApacheLog4j.class);
+        logCaptor = LogCaptor.forClass(ServiceWithApacheLog4j2.class);
         logCaptor.addFilter(levelFilter);
         logCaptor.setLogLevelToTrace();
 
-        Service service = new ServiceWithApacheLog4j();
+        Service service = new ServiceWithApacheLog4j2();
         service.sayHello();
 
         assertThat(logCaptor.getLogEvents())
@@ -387,45 +390,6 @@ class LogCaptorShould {
         service.sayHello();
 
         assertDiagnosticContext(logCaptor, "test-slf4j-mdc", "hello-slf4j");
-    }
-
-    @Test
-    void detachAppenderWithCloseMethod() {
-        Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
-        assertThat(fetchAppenders(logger)).isEmpty();
-
-        logCaptor = LogCaptor.forClass(this.getClass());
-        assertListAppender(logger);
-
-        logCaptor.close();
-        assertThat(fetchAppenders(logger)).isEmpty();
-    }
-
-    @Test
-    void detachAppenderWithAutoClosable() {
-        Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
-        assertThat(fetchAppenders(logger)).isEmpty();
-
-        try (LogCaptor ignored = LogCaptor.forClass(this.getClass())) {
-            assertListAppender(logger);
-        }
-
-        assertThat(fetchAppenders(logger)).isEmpty();
-    }
-
-    private static void assertListAppender(Logger logger) {
-        assertThat(fetchAppenders(logger))
-                .hasSize(1)
-                .first()
-                .isInstanceOf(ListAppender.class)
-                .extracting(Appender::getName)
-                .isEqualTo("log-captor");
-    }
-
-    private static List<Appender<?>> fetchAppenders(Logger logger) {
-        return StreamSupport
-                .stream(Spliterators.spliteratorUnknownSize(logger.iteratorForAppenders(), Spliterator.ORDERED), false)
-                .collect(Collectors.toList());
     }
 
     private static void assertDiagnosticContext(LogCaptor logCaptor, String mdcKey, String mdcValue) {
@@ -476,7 +440,7 @@ class LogCaptorShould {
     @Nested
     class ClearLogsShould {
 
-        private final LogCaptor logCaptor = LogCaptor.forClass(ServiceWithApacheLog4j.class);
+        private final LogCaptor logCaptor = LogCaptor.forClass(ServiceWithApacheLog4j2.class);
 
         @AfterEach
         void clearLogs() {
@@ -485,7 +449,7 @@ class LogCaptorShould {
 
         @Test
         void captureLogging() {
-            Service service = new ServiceWithApacheLog4j();
+            Service service = new ServiceWithApacheLog4j2();
             service.sayHello();
 
             assertThat(logCaptor.getInfoLogs()).containsExactly(LogMessage.INFO.getMessage());
@@ -505,12 +469,64 @@ class LogCaptorShould {
 
         @Test
         void captureLoggingWithTheSameLogCaptureInstance() {
-            Service service = new ServiceWithApacheLog4j();
+            Service service = new ServiceWithApacheLog4j2();
             service.sayHello();
 
             assertLogMessages(logCaptor, LogMessage.INFO, LogMessage.WARN, LogMessage.ERROR, LogMessage.DEBUG);
         }
 
+    }
+
+    @Nested
+    class CloseLogCaptorShould {
+
+        private LogCaptor logCaptor;
+
+        @AfterEach
+        void clearLogs() {
+            Optional.ofNullable(logCaptor)
+                    .ifPresent(LogCaptor::close);
+        }
+
+        @Test
+        void detachAppenderWithCloseMethod() {
+            Logger logger = (Logger) LogManager.getLogger(this.getClass().getCanonicalName());
+            assertThat(fetchAppenders(logger)).hasOnlyElementsOfType(ConsoleAppender.class);
+
+            logCaptor = LogCaptor.forName(this.getClass().getCanonicalName());
+            assertListAppender(logger);
+
+            logCaptor.close();
+            assertThat(fetchAppenders(logger)).isEmpty();
+        }
+
+        @Test
+        void detachAppenderWithAutoClosable() {
+            Logger logger = (Logger) LogManager.getLogger(this.getClass());
+            assertThat(fetchAppenders(logger)).hasOnlyElementsOfType(ConsoleAppender.class);
+
+            try (LogCaptor ignored = LogCaptor.forName(this.getClass().getCanonicalName())) {
+                assertListAppender(logger);
+            }
+
+            assertThat(fetchAppenders(logger)).isEmpty();
+        }
+
+    }
+
+    private static void assertListAppender(Logger logger) {
+        assertThat(fetchAppenders(logger))
+                .hasSize(1)
+                .first()
+                .isInstanceOf(ListAppender.class)
+                .extracting(Appender::getName)
+                .isEqualTo("log-captor");
+    }
+
+    private static List<Appender> fetchAppenders(Logger logger) {
+        return StreamSupport
+                .stream(spliteratorUnknownSize(logger.getAppenders().values().iterator(), ORDERED), false)
+                .collect(toList());
     }
 
 }

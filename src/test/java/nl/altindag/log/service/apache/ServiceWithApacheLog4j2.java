@@ -22,11 +22,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Hakan Altindag
+ * @author Hakan Altindag - Sébastien Vicard
  */
-public class ServiceWithApacheLog4j implements Service {
+public class ServiceWithApacheLog4j2 implements Service {
 
-    private static final Logger LOGGER = LogManager.getLogger(ServiceWithApacheLog4j.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServiceWithApacheLog4j2.class);
 
     @Override
     public void sayHello() {

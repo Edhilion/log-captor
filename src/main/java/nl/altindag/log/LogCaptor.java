@@ -16,56 +16,72 @@
 
 package nl.altindag.log;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.filter.Filter;
-import ch.qos.logback.core.read.ListAppender;
-import nl.altindag.log.model.LogEvent;
-import nl.altindag.log.util.JavaUtilLoggingLoggerUtils;
-import org.slf4j.LoggerFactory;
+import static java.util.stream.Collectors.toList;
+import static nl.altindag.log.util.Mappers.toLogEvent;
+import static org.apache.logging.log4j.LogManager.ROOT_LOGGER_NAME;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
-import static nl.altindag.log.util.Mappers.toLogEvent;
-import static org.slf4j.Logger.ROOT_LOGGER_NAME;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.slf4j.Log4jLogger;
+import org.slf4j.LoggerFactory;
+
+import nl.altindag.log.model.LogEvent;
+import nl.altindag.log.util.JavaUtilLoggingLoggerUtils;
 
 /**
- * @author Hakan Altindag
+ * @author Sébastien Vicard (based on the work of Hakan Altindag)
  */
 public final class LogCaptor implements AutoCloseable {
 
     private static final Map<String, Level> LOG_LEVEL_CONTAINER = new HashMap<>();
+    public static final String APPENDER_NAME = "log-captor";
 
     private final Logger logger;
-    private final ListAppender<ILoggingEvent> listAppender;
+    private final ListAppender listAppender;
 
     private LogCaptor(String loggerName) {
         org.slf4j.Logger slf4jLogger = LoggerFactory.getLogger(loggerName);
-        if (!(slf4jLogger instanceof Logger)) {
+        if (!(slf4jLogger instanceof Logger) && !(slf4jLogger instanceof Log4jLogger)) {
             throw new IllegalArgumentException(
                     String.format("SLF4J Logger implementation should be of the type [%s] but found [%s]. " +
-                                  "Please remove any other SLF4J implementations during the test phase from your classpath of your project. " +
-                                  "See here for an example configurations: https://github.com/Hakky54/log-captor#using-log-captor-alongside-with-other-logging-libraries",
-                                  Logger.class.getName(), slf4jLogger.getClass().getName()
+                                    "Please remove any other SLF4J implementations during the test phase from your classpath of your project. " +
+                                    "See here for an example configurations: https://github.com/Hakky54/log-captor#using-log-captor-alongside-with-other-logging-libraries",
+                            Logger.class.getName(), slf4jLogger.getClass().getName()
                     )
             );
         }
 
-        logger = (Logger) slf4jLogger;
-        listAppender = new ListAppender<>();
-        listAppender.setName("log-captor");
-        listAppender.start();
+        LoggerContext context = LoggerContext.getContext(false);
+        logger = context.getLogger(loggerName);
+
+        listAppender = ListAppender.newBuilder()
+                .setName(APPENDER_NAME)
+                .build();
+
+        if (!LOG_LEVEL_CONTAINER.containsKey(logger.getName())) {
+            LOG_LEVEL_CONTAINER.put(logger.getName(), logger.getLevel());
+        }
+
+        if (logger.getAppenders().containsKey(APPENDER_NAME)) {
+            logger.removeAppender(logger.getAppenders().get(APPENDER_NAME));
+        }
+
         logger.addAppender(listAppender);
+        listAppender.start();
 
         JavaUtilLoggingLoggerUtils.redirectToSlf4j(loggerName);
-        LOG_LEVEL_CONTAINER.putIfAbsent(logger.getName(), logger.getEffectiveLevel());
+        LOG_LEVEL_CONTAINER.putIfAbsent(logger.getName(), logger.getLevel());
     }
 
     /**
@@ -90,9 +106,10 @@ public final class LogCaptor implements AutoCloseable {
     }
 
     public List<String> getLogs() {
-        return listAppender.list.stream()
-                .map(ILoggingEvent::getFormattedMessage)
-                .collect(collectingAndThen(toList(), Collections::unmodifiableList));
+        return listAppender.getEvents().stream()
+                .map(org.apache.logging.log4j.core.LogEvent::getMessage)
+                .map(Message::getFormattedMessage)
+                .collect(toList());
     }
 
     public List<String> getInfoLogs() {
@@ -116,20 +133,21 @@ public final class LogCaptor implements AutoCloseable {
     }
 
     private List<String> getLogs(Level level) {
-        return listAppender.list.stream()
+        return listAppender.getEvents().stream()
                 .filter(logEvent -> logEvent.getLevel() == level)
-                .map(ILoggingEvent::getFormattedMessage)
-                .collect(collectingAndThen(toList(), Collections::unmodifiableList));
+                .map(org.apache.logging.log4j.core.LogEvent::getMessage)
+                .map(Message::getFormattedMessage)
+                .collect(toList());
     }
 
     public List<LogEvent> getLogEvents() {
-        return listAppender.list.stream()
+        return listAppender.getEvents().stream()
                 .map(toLogEvent())
                 .collect(toList());
     }
 
-    public void addFilter(Filter<ILoggingEvent> filter) {
-        listAppender.addFilter(filter);
+    public void addFilter(Filter filter) {
+        this.listAppender.addFilter(filter);
         filter.start();
     }
 
@@ -137,33 +155,33 @@ public final class LogCaptor implements AutoCloseable {
      * Overrides the log level property of the target logger. This may result that the overridden property
      * of the target logger is still active even though a new instance of {@link LogCaptor} has been created.
      * To roll-back to the initial state use: {@link LogCaptor#resetLogLevel()}
-     *
+     * <p>
      * This option will implicitly include the following log levels: WARN and ERROR
      */
     public void setLogLevelToInfo() {
-        logger.setLevel(Level.INFO);
+        setLogLevelTo(Level.INFO);
     }
 
     /**
      * Overrides the log level property of the target logger. This may result that the overridden property
      * of the target logger is still active even though a new instance of {@link LogCaptor} has been created.
      * To roll-back to the initial state use: {@link LogCaptor#resetLogLevel()}
-     *
+     * <p>
      * This option will implicitly include the following log levels: INFO, WARN and ERROR
      */
     public void setLogLevelToDebug() {
-        logger.setLevel(Level.DEBUG);
+        setLogLevelTo(Level.DEBUG);
     }
 
     /**
      * Overrides the log level property of the target logger. This may result that the overridden property
      * of the target logger is still active even though a new instance of {@link LogCaptor} has been created.
      * To roll-back to the initial state use: {@link LogCaptor#resetLogLevel()}
-     *
+     * <p>
      * This option will implicitly include the following log levels: INFO, DEBUG, WARN and ERROR
      */
     public void setLogLevelToTrace() {
-        logger.setLevel(Level.TRACE);
+        setLogLevelTo(Level.TRACE);
     }
 
     /**
@@ -172,7 +190,7 @@ public final class LogCaptor implements AutoCloseable {
      * To roll-back to the initial state use: {@link LogCaptor#resetLogLevel()}
      */
     public void disableLogs() {
-        logger.setLevel(Level.OFF);
+        setLogLevelTo(Level.OFF);
     }
 
     /**
@@ -181,17 +199,34 @@ public final class LogCaptor implements AutoCloseable {
      */
     public void resetLogLevel() {
         Optional.ofNullable(LOG_LEVEL_CONTAINER.get(logger.getName()))
-                .ifPresent(logger::setLevel);
+                .ifPresent(this::setLogLevelTo);
     }
 
     public void clearLogs() {
-        listAppender.list.clear();
+        listAppender.clear();
+    }
+
+    /**
+     * Overrides the log level property of the target logger. This may result that the overridden property
+     * of the target logger is still active even though a new instance of {@link LogCaptor} has been created.
+     * To roll-back to the initial state use: {@link LogCaptor#resetLogLevel()}
+     * <p>
+     */
+    private void setLogLevelTo(Level level) {
+        LoggerContext context = logger.getContext();
+        Configuration configuration = context.getConfiguration();
+
+        LoggerConfig rootLoggerConfig = logger.get();
+        rootLoggerConfig.removeAppender("Console");
+        rootLoggerConfig.addAppender(configuration.getAppender("Console"), level, null);
+        rootLoggerConfig.setLevel(level);
+        context.updateLoggers();
     }
 
     @Override
     public void close() {
         listAppender.stop();
-        logger.detachAppender(listAppender);
+        logger.removeAppender(listAppender);
     }
 
 }

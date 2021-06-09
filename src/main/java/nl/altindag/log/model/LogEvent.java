@@ -22,12 +22,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.logging.log4j.message.Message;
+
 /**
- * @author Hakan Altindag
+ * @author Hakan Altindag - Sébastien Vicard
  */
 public final class LogEvent {
 
-    private final String message;
+    private final Message message;
     private final String formattedMessage;
     private final String level;
     private final String loggerName;
@@ -36,7 +38,7 @@ public final class LogEvent {
     private final Throwable throwable;
     private final Map<String, String> diagnosticContext;
 
-    public LogEvent(String message,
+    public LogEvent(Message message,
                     String formattedMessage,
                     String level,
                     String loggerName,
@@ -56,7 +58,7 @@ public final class LogEvent {
     }
 
     public String getMessage() {
-        return message;
+        return message.getFormat();
     }
 
     public String getFormattedMessage() {

@@ -1,40 +1,43 @@
-[![Actions Status](https://github.com/Hakky54/log-captor/workflows/Build/badge.svg)](https://github.com/Hakky54/log-captor/actions)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=io.github.hakky54%3Alogcaptor&metric=alert_status)](https://sonarcloud.io/dashboard?id=io.github.hakky54%3Alogcaptor)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=io.github.hakky54%3Alogcaptor&metric=coverage)](https://sonarcloud.io/dashboard?id=io.github.hakky54%3Alogcaptor)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=io.github.hakky54%3Alogcaptor&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=io.github.hakky54%3Alogcaptor)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=io.github.hakky54%3Alogcaptor&metric=security_rating)](https://sonarcloud.io/dashboard?id=io.github.hakky54%3Alogcaptor)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=io.github.hakky54%3Alogcaptor&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=io.github.hakky54%3Alogcaptor)
-[![Apache2 license](https://img.shields.io/badge/license-Aache2.0-blue.svg)](https://github.com/Hakky54/log-captor/blob/master/LICENSE)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.hakky54/logcaptor/badge.svg)](https://mvnrepository.com/artifact/io.github.hakky54/logcaptor)
-[![javadoc](https://javadoc.io/badge2/io.github.hakky54/logcaptor/javadoc.svg)](https://javadoc.io/doc/io.github.hakky54/logcaptor)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FHakky54%2Flog-captor.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FHakky54%2Flog-captor?ref=badge_shield)
-[![Join the chat at https://gitter.im/hakky54/logcaptor](https://badges.gitter.im/hakky54/logcaptor.svg)](https://gitter.im/hakky54/logcaptor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Actions Status](https://github.com/Edhilion/log-captor/workflows/Build/badge.svg)](https://github.com/Edhilion/log-captor/actions)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=io.github.edhilion%3Alogcaptor&metric=alert_status)](https://sonarcloud.io/dashboard?id=io.github.edhilion%3Alogcaptor)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=io.github.edhilion%3Alogcaptor&metric=coverage)](https://sonarcloud.io/dashboard?id=io.github.edhilion%3Alogcaptor)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=io.github.edhilion%3Alogcaptor&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=io.github.edhilion%3Alogcaptor)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=io.github.edhilion%3Alogcaptor&metric=security_rating)](https://sonarcloud.io/dashboard?id=io.github.edhilion%3Alogcaptor)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=io.github.edhilion%3Alogcaptor&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=io.github.edhilion%3Alogcaptor)
+[![Apache2 license](https://img.shields.io/badge/license-Apache2.0-blue.svg)](https://github.com/Edhilion/log-captor/blob/master/LICENSE)
+[![javadoc](https://javadoc.io/badge2/io.github.edhilion/logcaptor/javadoc.svg)](https://javadoc.io/doc/io.github.edhilion/logcaptor)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FEdhilion%2Flog-captor.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FEdhilion%2Flog-captor?ref=badge_shield)
+[![Join the chat at https://gitter.im/edhilion/logcaptor](https://badges.gitter.im/edhilion/logcaptor.svg)](https://gitter.im/edhilion/logcaptor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=io.github.hakky54%3Alogcaptor)
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=io.github.edhilion%3Alogcaptor)
 
-# LogCaptor [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=With%20LogCaptor%20it%20is%20now%20very%20easy%20to%20captor%20and%20test%20your%20log%20message&url=https://github.com/Hakky54/log-captor/&via=hakky541&hashtags=logging,testing,log4j,slf4j,log4j2,jul,lombok,developer,java,scala,kotlin,logcaptor)
+# LogCaptor (log4j2 version) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=With%20LogCaptor%20it%20is%20now%20very%20easy%20to%20captor%20and%20test%20your%20log%20message&url=https://github.com/Edhilion/log-captor/&via=edhilion1&hashtags=logging,testing,log4j,slf4j,log4j2,jul,lombok,developer,java,scala,kotlin,logcaptor)
 
 # Install library with:
-### Install with [maven](https://mvnrepository.com/artifact/io.github.hakky54/logcaptor)
+### Install with [maven](https://mvnrepository.com/artifact/io.github.edhilion/logcaptor)
+_Not available for now_
 ```xml
 <dependency>
-    <groupId>io.github.hakky54</groupId>
+    <groupId>io.github.edhilion</groupId>
     <artifactId>logcaptor</artifactId>
-    <version>2.6.1</version>
+    <version>2.6.2</version>
     <scope>test</scope>
 </dependency>
 ```
 ### Install with Gradle
+_Not available for now_
 ```groovy
-testImplementation 'io.github.hakky54:logcaptor:2.6.1'
+testImplementation 'io.github.edhilion:logcaptor:2.6.2'
 ```
 ### Install with Scala SBT
+_Not available for now_
 ```
-libraryDependencies += "io.github.hakky54" % "logcaptor" % "2.6.1" % Test
+libraryDependencies += "io.github.edhilion" % "logcaptor" % "2.6.2" % Test
 ```
 ### Install with Apache Ivy
+_Not available for now_
 ```xml
-<dependency org="io.github.hakky54" name="logcaptor" rev="2.6.1" />
+<dependency org="io.github.edhilion" name="logcaptor" rev="2.6.2" />
 ```
 
 ## Table of contents
@@ -57,7 +60,12 @@ libraryDependencies += "io.github.hakky54" % "logcaptor" % "2.6.1" % Test
    
 
 # Introduction
+This version is a fork of Logcaptor by Hakky54 (https://github.com/Hakky54/log-captor).
+
 LogCaptor is a library which will enable you to easily capture logging entries for unit testing purposes.
+This version of the library uses Log4j2 as the logging framework, when the original https://github.com/Hakky54/log-captor version uses logback.
+
+For now, Hakky54's version and this version are meant to evolve together, so version numbers shows any difference between them. 
 
 ### Advantages
 - No mocking required
@@ -79,7 +87,7 @@ LogCaptor is a library which will enable you to easily capture logging entries f
  - SLFJ4 with Lombok
  - Java Util Logging with Lombok
 
-See the unit test [LogCaptorShould](src/test/java/nl/altindag/log/LogCaptorShould.java) for all the scenario's or checkout this project [Java Tutorials](https://github.com/Hakky54/java-tutorials) which contains more isolated examples of the individual logging frameworks
+See the unit test [LogCaptorShould](src/test/java/nl/altindag/log/LogCaptorShould.java) for all the scenario's or checkout this project [Java Tutorials](https://github.com/Edhilion/java-tutorials) which contains more isolated examples of the individual logging frameworks
  
 # Usage
 ##### Capture logs
@@ -385,11 +393,19 @@ public class FooServiceShould {
 ```
 
 ##### Disable all logs
-Add `logback-test.xml` to your test resources with the following content:
+Add `log4j2-test.xml` to your test resources with the following content:
 ```xml
-<configuration>
-    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
-</configuration>
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+   <Appenders>
+      <Null name="nop_appender" />
+   </Appenders>
+   <Loggers>
+      <Root level="trace">
+         <AppenderRef ref="nop_appender"/>
+      </Root>
+   </Loggers>
+</Configuration>
 ```
 
 # Known issues
@@ -404,7 +420,7 @@ You can fix that by excluding your main logging framework during the unit/integr
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
                 <classpathDependencyExcludes>
-                    <classpathDependencyExclude>org.apache.logging.log4j:log4j-slf4j-impl</classpathDependencyExclude>
+                   <classpathDependencyExclude>ch.qos.logback:logback-classic</classpathDependencyExclude>
                 </classpathDependencyExcludes>
             </configuration>
         </plugin>
@@ -413,7 +429,7 @@ You can fix that by excluding your main logging framework during the unit/integr
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
                 <classpathDependencyExcludes>
-                    <classpathDependencyExclude>org.apache.logging.log4j:log4j-slf4j-impl</classpathDependencyExclude>
+                   <classpathDependencyExclude>ch.qos.logback:logback-classic</classpathDependencyExclude>
                 </classpathDependencyExcludes>
             </configuration>
         </plugin>
@@ -424,7 +440,7 @@ And for gradle:
 ```groovy
 configurations {
     testImplementation {
-        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
     }
 }
 ```
@@ -434,9 +450,9 @@ configurations {
 There are plenty of ways to contribute to this project:
 
 * Give it a star
-* Share it with a [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=With%20LogCaptor%20it%20is%20now%20very%20easy%20to%20captor%20and%20test%20your%20log%20message&url=https://github.com/Hakky54/log-captor/&via=hakky541&hashtags=logging,testing,log4j,slf4j,log4j2,jul,lombok,developer,java,scala,kotlin,logcaptor)
-* Join the [Gitter room](https://gitter.im/hakky54/logcaptor) and leave a feedback or help with answering users questions
-* Submit a PR
+* Share it with a [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=With%20LogCaptor%20it%20is%20now%20very%20easy%20to%20captor%20and%20test%20your%20log%20message&url=https://github.com/Edhilion/log-captor/&via=edhilion1&hashtags=logging,testing,log4j,slf4j,log4j2,jul,lombok,developer,java,scala,kotlin,logcaptor)
+* Join the [Gitter room](https://gitter.im/edhilion/logcaptor) and leave a feedback or help with answering users questions
+* Contribute to https://github.com/Hakky54/log-captor and let me know the evolution
 
 ## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FHakky54%2Flog-captor.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FHakky54%2Flog-captor?ref=badge_large)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FEdhilion%2Flog-captor.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FEdhilion%2Flog-captor?ref=badge_large)

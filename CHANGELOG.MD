@@ -4,6 +4,7 @@ This list is not intended to be all-encompassing - it will document major and br
 changes with their rationale when appropriate:
 
 ### v2.6.1
+- Initial release for this version (based on https://github.com/Hakky54/log-captor v2.6.1)
 - Added cleanup function to tear down the setup
 ### v2.6.0
 - Added MDC (Mapped Diagnostic Context) support

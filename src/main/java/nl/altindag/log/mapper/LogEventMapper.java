@@ -16,10 +16,6 @@
 
 package nl.altindag.log.mapper;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.ThrowableProxy;
-import nl.altindag.log.model.LogEvent;
-
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -30,33 +26,35 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.apache.logging.log4j.message.Message;
+
+import nl.altindag.log.model.LogEvent;
+
 /**
- * @author Hakan Altindag
+ * @author Hakan Altindag - Sébastien Vicard
  */
-public final class LogEventMapper implements Function<ILoggingEvent, LogEvent> {
+public final class LogEventMapper implements Function<org.apache.logging.log4j.core.LogEvent, LogEvent> {
 
     private static final LogEventMapper INSTANCE = new LogEventMapper();
 
     private LogEventMapper() {}
 
     @Override
-    public LogEvent apply(ILoggingEvent iLoggingEvent) {
-        String message = iLoggingEvent.getMessage();
-        String formattedMessage = iLoggingEvent.getFormattedMessage();
-        String level = iLoggingEvent.getLevel().toString();
-        String loggerName = iLoggingEvent.getLoggerName();
-        ZonedDateTime timeStamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(iLoggingEvent.getTimeStamp()), ZoneOffset.UTC);
-        Map<String, String> diagnosticContext = Collections.unmodifiableMap(iLoggingEvent.getMDCPropertyMap());
+    public LogEvent apply(org.apache.logging.log4j.core.LogEvent logEvent) {
 
-        List<Object> arguments = Optional.ofNullable(iLoggingEvent.getArgumentArray())
+        Message message = logEvent.getMessage();
+        String formattedMessage = message.getFormattedMessage();
+        String level = logEvent.getLevel().toString();
+        String loggerName = logEvent.getLoggerName();
+        ZonedDateTime timeStamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(logEvent.getTimeMillis()), ZoneOffset.UTC);
+        Map<String, String> diagnosticContext = Collections.unmodifiableMap(logEvent.getContextData().toMap());
+
+        List<Object> arguments = Optional.ofNullable(message.getParameters())
                 .map(Arrays::asList)
                 .map(Collections::unmodifiableList)
                 .orElseGet(Collections::emptyList);
 
-        Throwable throwable = Optional.ofNullable(iLoggingEvent.getThrowableProxy())
-                .filter(ThrowableProxy.class::isInstance)
-                .map(ThrowableProxy.class::cast)
-                .map(ThrowableProxy::getThrowable)
+        Throwable throwable = Optional.ofNullable(logEvent.getThrown())
                 .orElse(null);
 
         return new LogEvent(

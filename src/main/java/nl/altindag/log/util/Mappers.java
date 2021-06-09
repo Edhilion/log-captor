@@ -16,20 +16,19 @@
 
 package nl.altindag.log.util;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
 import nl.altindag.log.mapper.LogEventMapper;
 import nl.altindag.log.model.LogEvent;
 
 import java.util.function.Function;
 
 /**
- * @author Hakan Altindag
+ * @author Hakan Altindag - Sébastien Vicard
  */
 public final class Mappers {
 
     private Mappers() {}
 
-    public static Function<ILoggingEvent, LogEvent> toLogEvent() {
+    public static Function<org.apache.logging.log4j.core.LogEvent, LogEvent> toLogEvent() {
         return LogEventMapper.getInstance();
     }
 
