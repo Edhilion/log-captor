@@ -73,6 +73,10 @@
         <version.maven-scm-publish-plugin>3.0.0</version.maven-scm-publish-plugin>
         <version.nexus-staging-maven-plugin>1.6.8</version.nexus-staging-maven-plugin>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <sonar.projectKey>Edhilion_log-captor</sonar.projectKey>
+        <sonar.organization>edhilion</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencies>

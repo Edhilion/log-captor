@@ -1,15 +1,13 @@
 [![Actions Status](https://github.com/Edhilion/log-captor/workflows/Build/badge.svg)](https://github.com/Edhilion/log-captor/actions)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=io.github.edhilion%3Alogcaptor&metric=alert_status)](https://sonarcloud.io/dashboard?id=io.github.edhilion%3Alogcaptor)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=io.github.edhilion%3Alogcaptor&metric=coverage)](https://sonarcloud.io/dashboard?id=io.github.edhilion%3Alogcaptor)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=io.github.edhilion%3Alogcaptor&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=io.github.edhilion%3Alogcaptor)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=io.github.edhilion%3Alogcaptor&metric=security_rating)](https://sonarcloud.io/dashboard?id=io.github.edhilion%3Alogcaptor)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=io.github.edhilion%3Alogcaptor&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=io.github.edhilion%3Alogcaptor)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Edhilion_log-captor&metric=alert_status)](https://sonarcloud.io/dashboard?id=Edhilion_log-captor)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Edhilion_log-captor&metric=coverage)](https://sonarcloud.io/dashboard?id=Edhilion_log-captor)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Edhilion_log-captor&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=Edhilion_log-captor)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Edhilion_log-captor&metric=security_rating)](https://sonarcloud.io/dashboard?id=Edhilion_log-captor)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Edhilion_log-captor&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=Edhilion_log-captor)
 [![Apache2 license](https://img.shields.io/badge/license-Apache2.0-blue.svg)](https://github.com/Edhilion/log-captor/blob/master/LICENSE)
-[![javadoc](https://javadoc.io/badge2/io.github.edhilion/logcaptor/javadoc.svg)](https://javadoc.io/doc/io.github.edhilion/logcaptor)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FEdhilion%2Flog-captor.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FEdhilion%2Flog-captor?ref=badge_shield)
 [![Join the chat at https://gitter.im/edhilion/logcaptor](https://badges.gitter.im/edhilion/logcaptor.svg)](https://gitter.im/edhilion/logcaptor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=io.github.edhilion%3Alogcaptor)
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=Edhilion_log-captor)
 
 # LogCaptor (log4j2 version) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=With%20LogCaptor%20it%20is%20now%20very%20easy%20to%20captor%20and%20test%20your%20log%20message&url=https://github.com/Edhilion/log-captor/&via=edhilion1&hashtags=logging,testing,log4j,slf4j,log4j2,jul,lombok,developer,java,scala,kotlin,logcaptor)
 
@@ -20,24 +18,24 @@ _Not available for now_
 <dependency>
     <groupId>io.github.edhilion</groupId>
     <artifactId>logcaptor</artifactId>
-    <version>2.6.2</version>
+    <version>2.6.1</version>
     <scope>test</scope>
 </dependency>
 ```
 ### Install with Gradle
 _Not available for now_
 ```groovy
-testImplementation 'io.github.edhilion:logcaptor:2.6.2'
+testImplementation 'io.github.edhilion:logcaptor:2.6.1'
 ```
 ### Install with Scala SBT
 _Not available for now_
 ```
-libraryDependencies += "io.github.edhilion" % "logcaptor" % "2.6.2" % Test
+libraryDependencies += "io.github.edhilion" % "logcaptor" % "2.6.1" % Test
 ```
 ### Install with Apache Ivy
 _Not available for now_
 ```xml
-<dependency org="io.github.edhilion" name="logcaptor" rev="2.6.2" />
+<dependency org="io.github.edhilion" name="logcaptor" rev="2.6.1" />
 ```
 
 ## Table of contents
