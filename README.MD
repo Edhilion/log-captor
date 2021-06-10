@@ -451,6 +451,3 @@ There are plenty of ways to contribute to this project:
 * Share it with a [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=With%20LogCaptor%20it%20is%20now%20very%20easy%20to%20captor%20and%20test%20your%20log%20message&url=https://github.com/Edhilion/log-captor/&via=edhilion1&hashtags=logging,testing,log4j,slf4j,log4j2,jul,lombok,developer,java,scala,kotlin,logcaptor)
 * Join the [Gitter room](https://gitter.im/edhilion/logcaptor) and leave a feedback or help with answering users questions
 * Contribute to https://github.com/Hakky54/log-captor and let me know the evolution
-
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FEdhilion%2Flog-captor.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FEdhilion%2Flog-captor?ref=badge_large)
